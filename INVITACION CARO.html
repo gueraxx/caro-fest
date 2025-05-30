@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Caro Fest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      color: #4a154b;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Pantalla de bienvenida */
+    .welcome-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('puerta.jpg') center center/cover no-repeat;
+      color: white;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-shadow: 0 0 8px rgba(0,0,0,0.8);
+      text-align: center;
+      transition: opacity 1s ease;
+      overflow: hidden;
+    }
+    .welcome-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Estrellas */
+    #stars-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+    }
+    .welcome-screen > *:not(#stars-canvas) {
+      z-index: 2;
+      position: relative;
+    }
+
+    .welcome-screen h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4rem;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+    }
+
+    .enter-btn {
+      padding: 18px 50px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #ad1457, #880e4f);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(173, 20, 87, 0.5);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .enter-btn:hover {
+      box-shadow: 0 10px 25px rgba(173, 20, 87, 0.8);
+      transform: scale(1.05);
+    }
+
+    .card {
+      background: white;
+      max-width: 700px;
+      width: 100%;
+      border-radius: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 15px 30px rgba(0,0,0,0.1);
+      padding: 40px 30px;
+      text-align: center;
+      color: #4a154b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      transition: opacity 1s ease, transform 1s ease;
+      z-index: 5;
+    }
+
+    .card.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+      transition-delay: 0.5s;
+    }
+
+    .card h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4rem;
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+      color: #ad1457;
+      text-shadow: 1px 1px 3px rgba(173,20,87,0.6);
+    }
+
+    .card h2 {
+      font-style: italic;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      color: #880e4f;
+    }
+
+    .card p {
+      font-size: 1.3rem;
+      line-height: 1.6;
+      margin: 8px 0;
+    }
+
+    .quince-img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(173,20,87,0.3);
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 14px 40px;
+      background: linear-gradient(45deg, #ad1457, #880e4f);
+      color: white;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-decoration: none;
+      box-shadow: 0 8px 15px rgba(173,20,87,0.6);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn:hover {
+      box-shadow: 0 12px 25px rgba(173,20,87,0.9);
+      transform: scale(1.1);
+    }
+
+    .footer {
+      margin-top: 35px;
+      font-size: 1rem;
+      color: #a32b7f;
+      font-weight: 600;
+    }
+
+    #audio-control {
+      margin-top: 25px;
+      background: #ad1457;
+      border: none;
+      color: white;
+      font-size: 2rem;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      box-shadow: 0 6px 15px rgba(173,20,87,0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+
+    #audio-control:hover {
+      background: #880e4f;
+      transform: scale(1.1);
+    }
+
+    #audio-control svg {
+      fill: white;
+      width: 32px;
+      height: 32px;
+    }
+
+    @media (max-width: 480px) {
+      .welcome-screen h1 { font-size: 2.8rem; }
+      .enter-btn { padding: 14px 35px; font-size: 1.1rem; }
+      .card h1 { font-size: 3rem; }
+      .card h2 { font-size: 1.4rem; }
+      .card p { font-size: 1rem; }
+      .btn { padding: 12px 30px; font-size: 1rem; }
+      #audio-control { width: 60px; height: 60px; font-size: 1.8rem; }
+      #audio-control svg { width: 26px; height: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pantalla de bienvenida -->
+  <div class="welcome-screen" id="welcome" role="region" aria-label="Pantalla de bienvenida">
+    <canvas id="stars-canvas"></canvas>
+    <h1>¿Estás listo?</h1>
+    <button class="enter-btn" id="btnEntrar" aria-label="Entrar a la invitación">Entrar</button>
+  </div>
+
+  <!-- Invitación -->
+  <div class="card" id="invitacion" role="region" aria-label="Invitación de XV años">
+    <img src="CARITO2.jpg" alt="Foto de Carolina" class="quince-img" />
+    <h1>Caro Fest</h1>
+    <h2>Carolina te invita </h2>
+    <p>Con gran alegría, quiero compartir contigo este momento tan especial.</p>
+    <p><strong>Fecha:</strong> 5 de julio de 2025</p>
+    <p><strong>Hora:</strong> 6:00 PM</p>
+    <p><strong>Lugar:</strong> Huehuetoca</p>
+    <a href="https://www.google.com/maps/place/Sal%C3%B3n+Jard%C3%ADn+de+Ensue%C3%B1o,+Ciudad+de+M%C3%A9xico" target="_blank" class="btn" rel="noopener noreferrer">Ver Ubicación</a>
+
+    <button id="audio-control" aria-label="Pausar música de fondo" title="Pausar música">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    </button>
+
+    <audio id="musica" loop>
+      <source src="Billie Eilish - Halleys Comet (Official Lyric Video).mp3" type="audio/mpeg" />
+      Tu navegador no soporta audio HTML5.
+    </audio>
+
+    <div class="footer">
+      Esperamos contar con tu presencia para celebrar juntos esta noche inolvidable.
+    </div>
+  </div>
+
+  <script>
+    const btnEntrar = document.getElementById('btnEntrar');
+    const welcome = document.getElementById('welcome');
+    const invitacion = document.getElementById('invitacion');
+    const musica = document.getElementById('musica');
+    const audioControl = document.getElementById('audio-control');
+
+    function setAudioIcon(isPlaying) {
+      audioControl.innerHTML = isPlaying
+        ? `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+        : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+      audioControl.setAttribute('aria-label', isPlaying ? 'Pausar música de fondo' : 'Reproducir música de fondo');
+      audioControl.setAttribute('title', isPlaying ? 'Pausar música' : 'Reproducir música');
+    }
+
+    btnEntrar.addEventListener('click', () => {
+      welcome.classList.add('hidden');
+      setTimeout(() => {
+        welcome.style.display = 'none';
+        invitacion.classList.add('show');
+        musica.play().then(() => setAudioIcon(true)).catch(() => setAudioIcon(false));
+      }, 1000);
+    });
+
+    audioControl.addEventListener('click', () => {
+      if (musica.paused) {
+        musica.play();
+        setAudioIcon(true);
+      } else {
+        musica.pause();
+        setAudioIcon(false);
+      }
+    });
+
+    setAudioIcon(false);
+
+    // Estrellas animadas
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function initStars(count) {
+      stars = [];
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 1.5,
+          speed: Math.random() * 0.5 + 0.2,
+        });
+      }
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'white';
+      stars.forEach((star) => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.speed;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      });
+      requestAnimationFrame(animateStars);
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars(150);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animateStars();
+  </script>
+</body>
+</html>
