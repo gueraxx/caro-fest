@@ -4,19 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Caro Fest</title>
+
+  <!-- Fuentes de Google Fonts para tipografías personalizadas -->
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display&display=swap" rel="stylesheet" />
+
   <style>
+    /* Reset box-sizing para todos los elementos */
     * {
       box-sizing: border-box;
     }
+
+    /* Estilos básicos para html y body */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: 'Playfair Display', serif;
-      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
-      color: #4a154b;
+      background: linear-gradient(135deg, #bb5e7f, #d6acc1);
+      color: #000000;
     }
+
+    /* Contenedor principal del body: centrado vertical y horizontal */
     body {
       display: flex;
       justify-content: center;
@@ -27,30 +35,34 @@
       position: relative;
     }
 
-    /* Pantalla de bienvenida */
+    /* =================
+       PANTALLA DE BIENVENIDA
+       ================= */
     .welcome-screen {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background: url('puerta.jpg') center center/cover no-repeat;
-      color: white;
+      background: url('puerta.jpg') center center/cover no-repeat; /* Imagen de fondo */
+      color: #00000059;
       z-index: 10;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      text-shadow: 0 0 8px rgba(0,0,0,0.8);
+      text-shadow: 0 0 8px rgba(136, 0, 0, 0.8);
       text-align: center;
       transition: opacity 1s ease;
       overflow: hidden;
     }
+
+    /* Clase para ocultar la pantalla de bienvenida */
     .welcome-screen.hidden {
       opacity: 0;
       pointer-events: none;
     }
 
-    /* Estrellas */
+    /* Canvas para las estrellas animadas, detrás del contenido */
     #stars-canvas {
       position: absolute;
       top: 0;
@@ -60,35 +72,59 @@
       display: block;
       z-index: 1;
     }
+
+    /* Todos los hijos de welcome-screen excepto el canvas tienen z-index más alto */
     .welcome-screen > *:not(#stars-canvas) {
       z-index: 2;
       position: relative;
     }
 
+    /* Estilo del título en pantalla de bienvenida */
     .welcome-screen h1 {
       font-family: 'Great Vibes', cursive;
       font-size: 4rem;
       margin-bottom: 30px;
       letter-spacing: 2px;
+      animation: glow 2s ease-in-out infinite alternate; /* Animación de brillo */
+      color: #ffffff;
     }
 
+    /* Animación de brillo para el texto */
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #e294d8, 0 0 20px #e6afd4, 0 0 30px #de59e2;
+      }
+      to {
+        text-shadow: 0 0 20px #e24bd6, 0 0 30px #521d42, 0 0 40px #e48be7;
+      }
+    }
+
+    /* Botón para entrar desde la pantalla de bienvenida */
     .enter-btn {
       padding: 18px 50px;
       font-size: 1.4rem;
       font-weight: 700;
       border: none;
       border-radius: 30px;
-      background: linear-gradient(45deg, #ad1457, #880e4f);
-      color: white;
+      background: linear-gradient(45deg, #dba1c5, #f5b4e5);
+      color: rgb(255, 255, 255);
       cursor: pointer;
-      box-shadow: 0 6px 15px rgba(173, 20, 87, 0.5);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
       transition: box-shadow 0.3s ease, transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
+    /* Efecto hover para el botón entrar */
     .enter-btn:hover {
-      box-shadow: 0 10px 25px rgba(173, 20, 87, 0.8);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
       transform: scale(1.05);
     }
 
+    /* =================
+       TARJETA DE INVITACIÓN
+       ================= */
     .card {
       background: white;
       max-width: 700px;
@@ -97,91 +133,117 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 15px 30px rgba(0,0,0,0.1);
       padding: 40px 30px;
       text-align: center;
-      color: #4a154b;
       display: flex;
       flex-direction: column;
       align-items: center;
-      opacity: 0;
+      opacity: 0; /* Inicialmente invisible */
       transform: scale(0.95);
-      pointer-events: none;
+      pointer-events: none; /* No interactuable */
       transition: opacity 1s ease, transform 1s ease;
       z-index: 5;
+      color: #b152a9;
     }
 
+    /* Cuando se muestra la tarjeta de invitación */
     .card.show {
       opacity: 1;
       transform: scale(1);
-      pointer-events: all;
+      pointer-events: all; /* Se puede interactuar */
       transition-delay: 0.5s;
     }
-
+  
+    /* Estilo del nombre "Carolina" en la invitación */
     .card h1 {
       font-family: 'Great Vibes', cursive;
-      font-size: 4rem;
+      font-size: 6rem;
       margin-bottom: 10px;
       letter-spacing: 3px;
-      color: #ad1457;
-      text-shadow: 1px 1px 3px rgba(173,20,87,0.6);
+      color: #550848;
+      background: linear-gradient(90deg, #bb5e7f, #bb5e7f, #bb5e7f);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: shimmer 4s infinite linear; /* Animación de brillo */
+      text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
     }
 
+    /* Animación de brillo tipo "shimmer" */
+    @keyframes shimmer {
+      0% {
+        background-position: -100%;
+      }
+      100% {
+        background-position: 200%;
+      }
+    }
+
+    /* Subtítulo con invitación */
     .card h2 {
       font-style: italic;
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       margin-bottom: 25px;
-      color: #880e4f;
+      color: #bb5e7f;
+      text-shadow: 0 1px 1px #ffffff;
     }
 
+    /* Párrafos con información del evento */
     .card p {
       font-size: 1.3rem;
       line-height: 1.6;
       margin: 8px 0;
+      color: #bb5e7f;
     }
 
+    /* Imagen decorativa de la quinceañera */
     .quince-img {
       width: 100%;
       max-height: 350px;
       object-fit: cover;
       border-radius: 25px;
-      box-shadow: 0 8px 20px rgba(173,20,87,0.3);
+      box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
       margin-bottom: 30px;
     }
 
+    /* Botón para ver ubicación en Google Maps */
     .btn {
       display: inline-block;
       margin-top: 30px;
       padding: 14px 40px;
-      background: linear-gradient(45deg, #ad1457, #880e4f);
+      background: linear-gradient(45deg, #bb5e7f, #d6acc1);
       color: white;
       border-radius: 50px;
       font-weight: 700;
       font-size: 1.2rem;
       text-decoration: none;
-      box-shadow: 0 8px 15px rgba(173,20,87,0.6);
+      box-shadow: 0 8px 15px rgba(29, 27, 21, 0.6);
       transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
 
+    /* Efecto hover para botón de ubicación */
     .btn:hover {
-      box-shadow: 0 12px 25px rgba(173,20,87,0.9);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.9);
       transform: scale(1.1);
     }
 
+    /* Texto del pie de página en invitación */
     .footer {
       margin-top: 35px;
       font-size: 1rem;
-      color: #a32b7f;
+      color: #bb5e7f;
       font-weight: 600;
     }
 
+    /* Botón circular para controlar reproducción de música */
     #audio-control {
       margin-top: 25px;
-      background: #ad1457;
+      background: #bb5e7f;
       border: none;
       color: white;
       font-size: 2rem;
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      box-shadow: 0 6px 15px rgba(173,20,87,0.6);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -190,55 +252,49 @@
       user-select: none;
     }
 
+    /* Efecto hover para botón de audio */
     #audio-control:hover {
-      background: #880e4f;
+      background: #bb5e7f;
       transform: scale(1.1);
     }
 
+    /* SVG dentro del botón de audio */
     #audio-control svg {
       fill: white;
       width: 32px;
       height: 32px;
     }
-
-    @media (max-width: 480px) {
-      .welcome-screen h1 { font-size: 2.8rem; }
-      .enter-btn { padding: 14px 35px; font-size: 1.1rem; }
-      .card h1 { font-size: 3rem; }
-      .card h2 { font-size: 1.4rem; }
-      .card p { font-size: 1rem; }
-      .btn { padding: 12px 30px; font-size: 1rem; }
-      #audio-control { width: 60px; height: 60px; font-size: 1.8rem; }
-      #audio-control svg { width: 26px; height: 26px; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- Pantalla de bienvenida -->
-  <div class="welcome-screen" id="welcome" role="region" aria-label="Pantalla de bienvenida">
-    <canvas id="stars-canvas"></canvas>
-    <h1>¿Estás listo?</h1>
-    <button class="enter-btn" id="btnEntrar" aria-label="Entrar a la invitación">Entrar</button>
+  <!-- =================
+       PANTALLA DE BIENVENIDA CON CANVAS DE ESTRELLAS Y BOTÓN ENTRAR
+       ================= -->
+  <div class="welcome-screen" id="welcome">
+    <canvas id="stars-canvas"></canvas> <!-- Canvas para las estrellas animadas -->
+    
+    <button class="enter-btn" id="btnEntrar">Entrar</button> <!-- Botón para salir de la bienvenida -->
   </div>
 
-  <!-- Invitación -->
-  <div class="card" id="invitacion" role="region" aria-label="Invitación de XV años">
+  <!-- =================
+       TARJETA DE INVITACIÓN PRINCIPAL (INICIALMENTE OCULTA)
+       ================= -->
+  <div class="card" id="invitacion">
     <img src="CARITO2.jpg" alt="Foto de Carolina" class="quince-img" />
-    <h1>Caro Fest</h1>
-    <h2>Carolina te invita </h2>
-    <p>Con gran alegría, quiero compartir contigo este momento tan especial.</p>
+    <h1>Carolina</h1>
+    <h2>Estás invitado a celebrar conmigo mi cumpleaños 15</h2>
     <p><strong>Fecha:</strong> 5 de julio de 2025</p>
     <p><strong>Hora:</strong> 6:00 PM</p>
     <p><strong>Lugar:</strong> Huehuetoca</p>
-    <a href="https://www.google.com/maps/place/Sal%C3%B3n+Jard%C3%ADn+de+Ensue%C3%B1o,+Ciudad+de+M%C3%A9xico" target="_blank" class="btn" rel="noopener noreferrer">Ver Ubicación</a>
+    <a href="https://www.google.com/maps/place/Sal%C3%B3n+Jard%C3%ADn+de+Ensue%C3%B1o,+Ciudad+de+M%C3%A9xico" target="_blank" class="btn">Ver Ubicación</a>
 
+    <!-- Botón para controlar música de fondo -->
     <button id="audio-control" aria-label="Pausar música de fondo" title="Pausar música">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M8 5v14l11-7z"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> <!-- Icono de reproducción -->
     </button>
 
+    <!-- Elemento de audio con la música en loop -->
     <audio id="musica" loop>
       <source src="Billie Eilish - Halleys Comet (Official Lyric Video).mp3" type="audio/mpeg" />
       Tu navegador no soporta audio HTML5.
@@ -250,29 +306,32 @@
   </div>
 
   <script>
+    // Referencias a elementos importantes
     const btnEntrar = document.getElementById('btnEntrar');
     const welcome = document.getElementById('welcome');
     const invitacion = document.getElementById('invitacion');
     const musica = document.getElementById('musica');
     const audioControl = document.getElementById('audio-control');
 
+    // Función para cambiar el icono del botón de audio según si está reproduciendo o pausado
     function setAudioIcon(isPlaying) {
       audioControl.innerHTML = isPlaying
-        ? `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
-        : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
-      audioControl.setAttribute('aria-label', isPlaying ? 'Pausar música de fondo' : 'Reproducir música de fondo');
-      audioControl.setAttribute('title', isPlaying ? 'Pausar música' : 'Reproducir música');
+        ? `<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>` // Icono pausa
+        : `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;       // Icono play
     }
 
+    // Evento al hacer click en el botón entrar (pantalla bienvenida)
     btnEntrar.addEventListener('click', () => {
-      welcome.classList.add('hidden');
+      welcome.classList.add('hidden'); // Oculta la pantalla de bienvenida con transición
       setTimeout(() => {
-        welcome.style.display = 'none';
-        invitacion.classList.add('show');
-        musica.play().then(() => setAudioIcon(true)).catch(() => setAudioIcon(false));
+        welcome.style.display = 'none'; // Oculta completamente el contenedor
+        invitacion.classList.add('show'); // Muestra la invitación
+        musica.play().then(() => setAudioIcon(true)) // Intenta reproducir la música y actualizar icono
+          .catch(() => setAudioIcon(false)); // En caso de error no muestra icono de reproducción
       }, 1000);
     });
 
+    // Evento para controlar el botón de música (pausa/reproducir)
     audioControl.addEventListener('click', () => {
       if (musica.paused) {
         musica.play();
@@ -283,13 +342,17 @@
       }
     });
 
+    // Inicializar icono en estado pausa
     setAudioIcon(false);
 
-    // Estrellas animadas
+    // =================
+    // Lógica para las estrellas animadas en el canvas
+    // =================
     const canvas = document.getElementById('stars-canvas');
     const ctx = canvas.getContext('2d');
     let stars = [];
 
+    // Inicializa array de estrellas con posición y velocidad aleatoria
     function initStars(count) {
       stars = [];
       for (let i = 0; i < count; i++) {
@@ -302,6 +365,7 @@
       }
     }
 
+    // Dibuja y actualiza las posiciones de las estrellas
     function animateStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = 'white';
@@ -309,22 +373,26 @@
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fill();
-        star.y += star.speed;
+        star.y += star.speed; // Mover hacia abajo
         if (star.y > canvas.height) {
-          star.y = 0;
-          star.x = Math.random() * canvas.width;
+          star.y = 0; // Reaparecer arriba
+          star.x = Math.random() * canvas.width; // Posición horizontal aleatoria
         }
       });
-      requestAnimationFrame(animateStars);
+      requestAnimationFrame(animateStars); // Bucle de animación
     }
 
+    // Ajusta el tamaño del canvas según la ventana y reinicia estrellas
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      initStars(150);
+      initStars(150); // Cantidad de estrellas
     }
 
+    // Evento para redimensionar canvas con la ventana
     window.addEventListener('resize', resizeCanvas);
+
+    // Inicializar canvas y animación
     resizeCanvas();
     animateStars();
   </script>
